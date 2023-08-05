@@ -7,8 +7,7 @@ import sys
 import getpass
 
 printformat = "%-30s%-10s%-25s"
-txt_file = sys.argv[1]
-
+txt_file = sys.argv[1]   #cacti graph id which you want
 # Command to execute shell commands and capture output
 def execute_command(command):
     result = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -38,11 +37,11 @@ def datareform(graph_data):
 
 # Login to Cacti system and store cookies
 def login_cacti1(url, csrf_token, username, password):
-    command = 'curl -L -s -c /home/nocreport/cookies1.txt -b /home/nocreport/cookies1.txt -d "__csrf_magic={}&action=login&login_username={}&login_password={}&realm=ldap" "{}/index.php"'.format(csrf_token, username, password, url)
+    command = 'curl -L -s -c /filepathforcookiesforurl1.txt -b /filepathforcookiesforurl1.txt -d "__csrf_magic={}&action=login&login_username={}&login_password={}&realm=ldap" "{}/index.php"'.format(csrf_token, username, password, url)
     execute_command(command)
 
 def login_cacti2(url, csrf_token, username, password):
-    command = 'curl -L -s -c /home/nocreport/cookies2.txt -b /home/nocreport/cookies2.txt -d "__csrf_magic={}&action=login&login_username={}&login_password={}&realm=ldap" "{}/index.php"'.format(csrf_token, username, password, url)
+    command = 'curl -L -s -c /filepathforcookiesforurl2.txt -b /filepathforcookiesforurl2.txt -d "__csrf_magic={}&action=login&login_username={}&login_password={}&realm=ldap" "{}/index.php"'.format(csrf_token, username, password, url)
     execute_command(command)
 
 # Modify cookies file with specific value
@@ -58,12 +57,12 @@ def modify_cookies2(cookie):
 
 # Retrieve graph data for a given graph ID, start date, and end date
 def get_graph_data1(url, graph_id, start_date, end_date):
-    command = 'curl -L -s -b /home/nocreport/cookies1.txt "{}/graph_xport.php?local_graph_id={}&rra_id=0&graph_start={}&graph_end={}"'.format(url, graph_id, start_date, end_date)
+    command = 'curl -L -s -b /filepathforcookiesforurl2.txt "{}/graph_xport.php?local_graph_id={}&rra_id=0&graph_start={}&graph_end={}"'.format(url, graph_id, start_date, end_date)
     output = execute_command(command)
     return output
 
 def get_graph_data2(url, graph_id, start_date, end_date):
-    command = 'curl -L -s -b /home/nocreport/cookies2.txt "{}/graph_xport.php?local_graph_id={}&rra_id=0&graph_start={}&graph_end={}"'.format(url, graph_id, start_date, end_date)
+    command = 'curl -L -s -b /filepathforcookiesforurl2.txt "{}/graph_xport.php?local_graph_id={}&rra_id=0&graph_start={}&graph_end={}"'.format(url, graph_id, start_date, end_date)
     output = execute_command(command)
     return output
 
