@@ -1,8 +1,10 @@
+#!/usr/bin/python2.7
 import subprocess
 import re
 import datetime
 import csv
 import sys
+import getpass
 
 printformat = "%-30s%-10s%-25s"
 txt_file = sys.argv[1]
@@ -36,39 +38,32 @@ def datareform(graph_data):
 
 # Login to Cacti system and store cookies
 def login_cacti1(url, csrf_token, username, password):
-    command = 'curl -L -s -c cookies1.txt -b cookies1.txt -d "__csrf_magic={}&action=login&login_username={}&login_password={}&realm=ldap" "{}/index.php"'.format(csrf_token, username, password, url)
+    command = 'curl -L -s -c /home/nocreport/cookies1.txt -b /home/nocreport/cookies1.txt -d "__csrf_magic={}&action=login&login_username={}&login_password={}&realm=ldap" "{}/index.php"'.format(csrf_token, username, password, url)
     execute_command(command)
 
 def login_cacti2(url, csrf_token, username, password):
-    command = 'curl -L -s -c cookies2.txt -b cookies2.txt -d "__csrf_magic={}&action=login&login_username={}&login_password={}&realm=ldap" "{}/index.php"'.format(csrf_token, username, password, url)
+    command = 'curl -L -s -c /home/nocreport/cookies2.txt -b /home/nocreport/cookies2.txt -d "__csrf_magic={}&action=login&login_username={}&login_password={}&realm=ldap" "{}/index.php"'.format(csrf_token, username, password, url)
     execute_command(command)
 
 # Modify cookies file with specific value
 def modify_cookies1(cookie):
     sed_command = r's/^(([^[:space:]]+[[:space:]]+){6})[^[:space:]]+/\1%s/' % cookie
-    command = "sed -i -E '{}' {}".format(sed_command, "/home/aung.shanbo/cookies1.txt")
+    command = "sed -i -E '{}' {}".format(sed_command, "/home/nocreport/cookies1.txt")
     execute_command(command)
     
 def modify_cookies2(cookie):
     sed_command = r's/^(([^[:space:]]+[[:space:]]+){6})[^[:space:]]+/\1%s/' % cookie
-    command = "sed -i -E '{}' {}".format(sed_command, "/home/aung.shanbo/cookies2.txt")
+    command = "sed -i -E '{}' {}".format(sed_command, "/home/nocreport/cookies2.txt")
     execute_command(command)
-
-# Retrieve graph IDs for a given host ID
-def get_graph_ids(url, host_id):
-    command = 'curl -L -s -b cookies.txt "{}/graphs.php?action=tree&host_id={}"'.format(url, host_id)
-    output = execute_command(command)
-    graph_ids = re.findall(r'graph_edit&amp;id=(\d+)', output)
-    return graph_ids
 
 # Retrieve graph data for a given graph ID, start date, and end date
 def get_graph_data1(url, graph_id, start_date, end_date):
-    command = 'curl -L -s -b cookies1.txt "{}/graph_xport.php?local_graph_id={}&rra_id=0&graph_start={}&graph_end={}"'.format(url, graph_id, start_date, end_date)
+    command = 'curl -L -s -b /home/nocreport/cookies1.txt "{}/graph_xport.php?local_graph_id={}&rra_id=0&graph_start={}&graph_end={}"'.format(url, graph_id, start_date, end_date)
     output = execute_command(command)
     return output
 
 def get_graph_data2(url, graph_id, start_date, end_date):
-    command = 'curl -L -s -b cookies2.txt "{}/graph_xport.php?local_graph_id={}&rra_id=0&graph_start={}&graph_end={}"'.format(url, graph_id, start_date, end_date)
+    command = 'curl -L -s -b /home/nocreport/cookies2.txt "{}/graph_xport.php?local_graph_id={}&rra_id=0&graph_start={}&graph_end={}"'.format(url, graph_id, start_date, end_date)
     output = execute_command(command)
     return output
 
@@ -81,12 +76,12 @@ def calculate_usage(dataa):
 # Main function
 def main():
     
-    cookie1 = raw_input("Enter the cookie value for sbsnms: ")
-    cookie2 = raw_input("Enter the cookie value for mttuinfranms: ")
-    cacti_url1 = "http://sbsnms.frontiir.net/cacti"
-    cacti_url2 = "http://mttuinfranms.frontiir.net/cacti"
-    username = "aung.shanbo"  # Enter your username
-    password = "Fr0nt!!r123"  # Enter your password
+    cookie1 = raw_input("Enter the cookie value for url1: ")
+    cookie2 = raw_input("Enter the cookie value for url2: ")
+    cacti_url1 = "your cacti url1"
+    cacti_url2 = "your cacti url2"
+    username = raw_input("Enter Your Username: ")  # Enter your username
+    password = getpass.getpass("Enter Your Password: ")  # Enter your password
 
     # Set the timezone
     subprocess.call('export TZ="Asia/Rangoon"', shell=True)
@@ -132,8 +127,8 @@ def main():
                 inbound, outbound = datareform(eth3p1data)
                 eth3p1traffic = calculate_usage(outbound)
                 eth3p2data = get_graph_data2(cacti_url2, eth3p2, graph_start, graph_end)
-                inbound, outbound = datareform(eth3p1data)
-                eth3p2traffic = calculate_usage(outbound)
+                inbound, outbound = datareform(eth3p2data)
+                eth3p2traffic = calculate_usage(inbound)
             print(printformat % (description,eth3p1traffic,eth3p2traffic))
 if __name__ == "__main__":
     main()
