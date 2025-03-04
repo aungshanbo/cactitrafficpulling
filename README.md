@@ -4,7 +4,7 @@ This Python 2.7 script retrieves traffic data from Cacti graphs, processes it, a
 
 ## Prerequisites
 
-- Python 2.7
+- Python 2.7 (Ensure you are using Python 2.7 as the script is not compatible with Python 3)
 - `curl` command-line tool installed on your system
 - Access to the Cacti monitoring system
 
@@ -12,12 +12,12 @@ This Python 2.7 script retrieves traffic data from Cacti graphs, processes it, a
 
 1. Clone the repository or download the script:
    ```sh
-  git@github.com:aungshanbo/cactitrafficpulling.git
+   git clone https://github.com/aungshanbo/cactitrafficpulling.git
    cd cactitrafficpulling
    ```
 2. Ensure the script is executable:
    ```sh
-   chmod +x traffic_collector.py
+   chmod +x lazyguy.py
    ```
 
 ## Usage
@@ -39,7 +39,7 @@ Server2,789,1011,outbound
 
 ### Script Execution Example
 ```
-$ python2.7 traffic_collector.py graph_ids.csv
+$ python2.7 lazyguy.py graph_ids.csv
 Enter the cookie value for url1: <cookie1>
 Enter the cookie value for url2: <cookie2>
 Enter Your Username: admin
