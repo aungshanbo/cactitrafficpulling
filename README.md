@@ -4,7 +4,7 @@ This Python 2.7 script retrieves traffic data from Cacti graphs, processes it, a
 
 ## Prerequisites
 
-- Python 2.7 (Ensure you are using Python 2.7 as the script is not compatible with Python 3)
+- Python 2.7
 - `curl` command-line tool installed on your system
 - Access to the Cacti monitoring system
 
@@ -12,8 +12,8 @@ This Python 2.7 script retrieves traffic data from Cacti graphs, processes it, a
 
 1. Clone the repository or download the script:
    ```sh
-   git clone https://github.com/yourusername/cacti-traffic-collector.git
-   cd cacti-traffic-collector
+  git@github.com:aungshanbo/cactitrafficpulling.git
+   cd cactitrafficpulling
    ```
 2. Ensure the script is executable:
    ```sh
@@ -25,7 +25,7 @@ This Python 2.7 script retrieves traffic data from Cacti graphs, processes it, a
 Run the script with a CSV file containing Cacti graph IDs as an argument:
 
 ```sh
-python2.7 traffic_collector.py <graph_id_file.csv>
+python2.7 lazyguy.py <graph_id_file.csv>
 ```
 
 ### Example CSV File Format
